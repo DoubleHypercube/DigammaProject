@@ -1,5 +1,4 @@
 boot:
-    `debug 2`
     `image 1` ; System
     Please select an option.
     `drawoff`
@@ -24,7 +23,7 @@ menu: ; standard menu routine
     `drawoff`
     `pdtr $eax`
     `reset`
-    `jump $eax`
+    `jsr $eax`
 
 callMenu:
     `reset`
@@ -87,9 +86,22 @@ filltests:
 
 debug:
     `reset`
-    TODO
-    `wait`
-    `jump info`
+    `setdi 0`
+    `setda dbgLogBytecode`
+    `setdt 8 4c 6f 67 42 63 6f 64 65` ; LogBcode
+    `setdi 1`
+    `setda dbgLogMem`
+    `setdt 8 4c 6f 67 4d 65 6d 49 4f` ; LogMemIO
+    `setdi 2`
+    `setda dbgLogJumps`
+    `setdt 8 4c 6f 67 4a 75 6d 70 73` ; LogJumps
+    `setdi 3`
+    `setda dbgDumpMem`
+    `setdt 7 44 75 6d 70 52 41 4d` ; DumpRAM
+    `setdi 4`
+    `setda info`
+    `setdt 4 42 61 63 6b` ; Back
+    `jsr menu`
 
 debugEnabled:
     `setdi 2`
@@ -120,6 +132,22 @@ disableDebug:
 exit:
     `halt`
     `jump 0`
+
+dbgLogBytecode:
+    `debug 0`
+    `jump debug`
+
+dbgLogMem:
+    `debug 1`
+    `jump debug`
+
+dbgLogJumps:
+    `debug 2`
+    `jump debug`
+
+dbgDumpMem:
+    `debug FF`
+    `jump debug`
 
 soundtest:
     `reset`
